@@ -1,0 +1,6 @@
+@FluentTaskManager.Server_HostAddress = http://localhost:5264
+
+GET {{FluentTaskManager.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
