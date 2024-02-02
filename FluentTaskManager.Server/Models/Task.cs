@@ -37,6 +37,6 @@ namespace FluentTaskManager.Server.Models
 
         public DateTime? CompletedDate { get; set; }
 
-        // public User AssignedUser { get; set; }
+        public User AssignedUser { get; set; }
     }
 }
