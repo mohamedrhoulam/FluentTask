@@ -1,0 +1,52 @@
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.task-list-item {
+  display: flex;
+  align-items: center;
+  background-color: #363636;
+  padding: 1em;
+  border-radius: 8px;
+  transition: background-color 0.3s ease-in-out;
+
+  &:hover {
+    background-color: #555555;
+  }
+
+  .task-item-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #888888;
+    border-radius: 4px;
+    margin-right: 1em;
+    cursor: pointer;
+
+    &.completed {
+      background-color: #888888;
+      border-color: #888888;
+    }
+  }
+
+  .task-item-content {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+
+    .task-item-title {
+      flex-grow: 1;
+      color: #ffffff;
+      margin: 0;
+      font-size: 1em;
+      // text-decoration-line: ${(props) => (props.completed ? 'line-through' : 'none')};
+      color: #888888;
+    }
+
+    .task-item-actions {
+      display: flex;
+      gap: 0.4em;
+    }
+  }
+}
