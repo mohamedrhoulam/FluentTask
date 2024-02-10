@@ -26,6 +26,11 @@ namespace FluentTaskManager.Server.Repositories
 
         public void AddTask(Task task)
         {
+            if (_context.Tasks.Any(t => t.Id == task.Id))
+            {
+                throw new ArgumentException("Task with the same id already exists.");
+            }
+
             _context.Tasks.Add(task);
             _context.SaveChanges();
         }
