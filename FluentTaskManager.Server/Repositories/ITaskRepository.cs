@@ -1,10 +1,15 @@
-namespace FluentTaskManager.Server.Repositories;
+using FluentTaskManager.Server.Models;
+using System.Linq;
+using Task = FluentTaskManager.Server.Models.Task;
 
-public interface ITaskRepository
+namespace FluentTaskManager.Server.Repositories
 {
-    IEnumerable<Task> GetAllTasks();
-    Task GetTaskById(int id);
-    void AddTask(Task task);
-    void DeleteTask(int id);
-    void UpdateTask(int id, Task task);
+    public interface ITaskRepository
+    {
+        IQueryable<Task> GetAllTasks();
+        Task GetTaskById(int id);
+        void AddTask(Task task);
+        void DeleteTask(int id);
+        void UpdateTask(int id, Task task);
+    }
 }
