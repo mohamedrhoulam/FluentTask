@@ -19,7 +19,7 @@ namespace FluentTaskManager.Server.Repositories
             return _context.Tasks;
         }
 
-        public Task GetTaskById(int id)
+        public Task? GetTaskById(int id)
         {
             return _context.Tasks.FirstOrDefault(t => t.Id == id);
         }
