@@ -76,9 +76,34 @@ namespace FluentTaskManager.Server.Controllers
 
         // POST: api/Task
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /*[HttpPost]
+        public async Task<ActionResult<Task>> PostTask(Task task)
+        {
+            _context.Tasks.Add(task);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetTask), new { id = task.Id }, task);
+        }*/
+
         [HttpPost]
         public async Task<ActionResult<Task>> PostTask(Task task)
         {
+            if (task.AssignedUser != null && task.AssignedUser.Id > 0)
+            {
+                var user = await _context.Users.FindAsync(task.AssignedUser.Id);
+
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                task.AssignedUser = user;
+            }
+            else
+            {
+                return BadRequest();
+            }
+
             _context.Tasks.Add(task);
             await _context.SaveChangesAsync();
 
