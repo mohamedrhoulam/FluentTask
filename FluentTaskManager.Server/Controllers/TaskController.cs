@@ -1,49 +1,109 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using FluentTaskManager.Server.Repositories;
+using Microsoft.EntityFrameworkCore;
+using FluentTaskManager.Server.Data;
+using FluentTaskManager.Server.Models;
 using Task = FluentTaskManager.Server.Models.Task;
 
-namespace FluentTaskManager.Server.Controllers;
-
-[ApiController]
-[Route("[controller]")]
-public class TaskController : ControllerBase
+namespace FluentTaskManager.Server.Controllers
 {
-    private readonly ITaskRepository _taskRepository;
-
-    public TaskController(ITaskRepository taskRepository)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class TaskController : ControllerBase
     {
-        _taskRepository = taskRepository;
-    }
+        private readonly ApplicationDbContext _context;
 
-    [HttpGet]
-    public IQueryable<Models.Task> GetAllTasks()
-    {
-        return _taskRepository.GetAllTasks();
-    }
+        public TaskController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
-    [HttpGet("{id}")]
-    public Models.Task? GetTaskById(int id)
-    {
-        return _taskRepository.GetTaskById(id);
-    }
+        // GET: api/Task
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Task>>> GetTasks()
+        {
+            return await _context.Tasks.ToListAsync();
+        }
 
-    [HttpPost]
-    public void AddTask(Models.Task task)
-    {
-         _taskRepository.Add(task)
-         await _taskRepository.SaveChangesAsync();
-         return CreatedAtAction(nameof(GetTaskById), new { id = task.Id }, task);
-    }
+        // GET: api/Task/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Task>> GetTask(int id)
+        {
+            var task = await _context.Tasks.FindAsync(id);
 
-    [HttpDelete("{id}")]
-    public void DeleteTask(int id)
-    {
-        _taskRepository.DeleteTask(id);
-    }
+            if (task == null)
+            {
+                return NotFound();
+            }
 
-    [HttpPut("{id}")]
-    public void UpdateTask(int id, Task task)
-    {
-        _taskRepository.UpdateTask(id, task);
+            return task;
+        }
+
+        // PUT: api/Task/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutTask(int id, Task task)
+        {
+            if (id != task.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(task).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TaskExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // POST: api/Task
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Task>> PostTask(Task task)
+        {
+            _context.Tasks.Add(task);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetTask), new { id = task.Id }, task);
+        }
+
+        // DELETE: api/Task/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTask(int id)
+        {
+            var task = await _context.Tasks.FindAsync(id);
+            if (task == null)
+            {
+                return NotFound();
+            }
+
+            _context.Tasks.Remove(task);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool TaskExists(int id)
+        {
+            return _context.Tasks.Any(e => e.Id == id);
+        }
     }
 }
