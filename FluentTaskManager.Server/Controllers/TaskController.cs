@@ -30,7 +30,9 @@ public class TaskController : ControllerBase
     [HttpPost]
     public void AddTask(Models.Task task)
     {
-        _taskRepository.AddTask(task);
+         _taskRepository.Add(task)
+         await _taskRepository.SaveChangesAsync();
+         return CreatedAtAction(nameof(GetTaskById), new { id = task.Id }, task);
     }
 
     [HttpDelete("{id}")]
