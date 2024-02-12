@@ -1,4 +1,6 @@
 using FluentTaskManager.Server.Repositories;
+using Task = FluentTaskManager.Server.Models.Task;
+
 
 namespace FluentTaskManager.Server.Services
 {
@@ -11,7 +13,7 @@ namespace FluentTaskManager.Server.Services
             _taskRepository = taskRepository;
         }
 
-        public IQueryable<Task> GetAllTasks()
+        public IQueryable<Models.Task> GetAllTasks()
         {
             return _taskRepository.GetAllTasks();
         }

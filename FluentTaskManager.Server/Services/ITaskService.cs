@@ -1,3 +1,5 @@
+using Task = FluentTaskManager.Server.Models.Task;
+
 namespace FluentTaskManager.Server.Services
 {
     public interface ITaskService
