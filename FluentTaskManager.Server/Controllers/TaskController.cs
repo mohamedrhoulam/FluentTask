@@ -86,23 +86,26 @@ namespace FluentTaskManager.Server.Controllers
         }*/
 
         [HttpPost]
-        public async Task<ActionResult<Task>> PostTask(Task task)
+        [HttpPost]
+        [HttpPost]
+        public async Task<ActionResult<Task>> PostTask(TaskCreateModel taskCreateModel)
         {
-            if (task.AssignedUser != null && task.AssignedUser.Id > 0)
-            {
-                var user = await _context.Users.FindAsync(task.AssignedUser.Id);
+            var user = await _context.Users.FindAsync(taskCreateModel.AssignedUserId);
 
-                if (user == null)
-                {
-                    return NotFound();
-                }
-
-                task.AssignedUser = user;
-            }
-            else
+            if (user == null)
             {
-                return BadRequest();
+                return NotFound();
             }
+
+            var task = new Task
+            {
+                Name = taskCreateModel.Title,
+                Description = taskCreateModel.Description,
+                AssignedUser = user,
+                DueDate = taskCreateModel.DueDate,
+                Priority = taskCreateModel.Priority,
+                Status = taskCreateModel.Status,
+            };
 
             _context.Tasks.Add(task);
             await _context.SaveChangesAsync();
